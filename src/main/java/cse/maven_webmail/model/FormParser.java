@@ -205,14 +205,18 @@ public class FormParser {
                     } else if (fieldName.equals("date")) {
                         // 예약메일 시간 저장
                         // yyyy-MM-ddThh:mm 포맷 적용
-                        setYear(item.substring(0, 4));
-                        setMomth(item.substring(5, 7));
-                        setDay(item.substring(8, 10));
-                        setHour(item.substring(11, 13));
-                        setMinute(item.substring(14, 16));
+                        System.out.println(item);
+                        if (getIsReservation()) {
+                            setYear(item.substring(0, 4));
+                            setMomth(item.substring(5, 7));
+                            setDay(item.substring(8, 10));
+                            setHour(item.substring(11, 13));
+                            setMinute(item.substring(14, 16));
+                        }
                     }
                 } else {  // 6. 첨부 파일 처리
                     if (!(fi.getName() == null || fi.getName().equals(""))) {
+                        System.out.println("$$$$$$$$$$$$$");
                         String fieldName = fi.getFieldName();
                         System.out.println("ATTACHED FILE : " + fieldName + " = " + fi.getName());
 

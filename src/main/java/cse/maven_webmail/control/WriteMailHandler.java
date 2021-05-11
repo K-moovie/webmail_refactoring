@@ -134,24 +134,26 @@ public class WriteMailHandler extends HttpServlet {
             }
         // END IF 예약 전송
         }
+        else {
+            System.out.println("***********");
+            // 4. SmtpAgent 객체에 메일 관련 정보 설정
+            SmtpAgent agent = new SmtpAgent(host, userid);
+            agent.setTo(parser.getToAddress());
+            agent.setCc(parser.getCcAddress());
+            agent.setSubj(parser.getSubject());
+            agent.setBody(parser.getBody());
+            String fileName = parser.getFileName();
+            System.out.println("WriteMailHandler.sendMessage() : fileName = " + fileName);
+            if (fileName != null) {
+                agent.setFile1(fileName);
+            }
 
-        // 4. SmtpAgent 객체에 메일 관련 정보 설정
-        SmtpAgent agent = new SmtpAgent(host, userid);
-        agent.setTo(parser.getToAddress());
-        agent.setCc(parser.getCcAddress());
-        agent.setSubj(parser.getSubject());
-        agent.setBody(parser.getBody());
-        String fileName = parser.getFileName();
-        System.out.println("WriteMailHandler.sendMessage() : fileName = " + fileName);
-        if (fileName != null) {
-            agent.setFile1(fileName);
+            // 5. 메일 전송 권한 위임
+            if (agent.sendMessage()) {
+                status = true;
+            }
+            return status;
         }
-
-        // 5. 메일 전송 권한 위임
-        if (agent.sendMessage()) {
-            status = true;
-        }
-        return status;
     }  // sendMessage()
 
     private String getMailTransportPopUp(boolean success) {

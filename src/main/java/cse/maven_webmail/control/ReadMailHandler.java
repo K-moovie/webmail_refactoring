@@ -85,6 +85,15 @@ public class ReadMailHandler extends HttpServlet {
                     f.mkdir();
                 }
             }
+            // 202105 KYH @ - MAC OS X 첨부파일 대응
+            else if (System.getProperty("os.name").contains("Mac")) {
+                downloadDir = request.getServletContext().getRealPath("/WEB-INF") 
+                        + File.separator + "download";
+                File f = new File(downloadDir);
+                if (!f.exists()) {
+                    f.mkdir();
+                }
+            }
 
             response.setHeader("Content-Disposition", "attachment; filename="
                     + URLEncoder.encode(fileName, "UTF-8") + ";");
