@@ -41,6 +41,11 @@
                         <td> 메일 제목 </td>
                         <td> <input type="text" name="subj" size="80"  >  </td>
                     </tr>
+                     <tr>
+                        <td> 예약전송 </td>
+                        <td> <input type="checkbox" name='reservation'>예약 전송 여부<br>
+                            <input type="datetime-local" name="date"> </td>
+                    </tr>
                     <tr>
                         <td colspan="2">본  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 문</td>
                     </tr>

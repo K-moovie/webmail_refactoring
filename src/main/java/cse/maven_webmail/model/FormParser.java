@@ -26,10 +26,27 @@ public class FormParser {
     private String body = null;
     private String fileName = null;
     private String uploadTargetDir = "C:/temp/upload";
+    // 202105 KYH - @ 예약 여부 및 예약 시간 추가
+    private boolean isReservation = false;
+    private String year = null;
+    private String momth = null;
+    private String day = null;
+    private String hour = null;
+    private String minute = null;
+    private String aliasFileName = null;
 
     public FormParser(HttpServletRequest request) {
         this.request = request;
         if (System.getProperty("os.name").equals("Linux")) {
+            uploadTargetDir = request.getServletContext().getRealPath("/WEB-INF")
+                    + File.separator + "upload";
+            File f = new File(uploadTargetDir);
+            if (!f.exists()) {
+                f.mkdir();
+            }
+        }
+        // 202105 KYH @ - MAC OS X 첨부파일 대응
+        else if (System.getProperty("os.name").contains("Mac")) {
             uploadTargetDir = request.getServletContext().getRealPath("/WEB-INF")
                     + File.separator + "upload";
             File f = new File(uploadTargetDir);
@@ -63,6 +80,14 @@ public class FormParser {
         this.fileName = fileName;
     }
 
+    public String getAliasFileName() {
+        return aliasFileName;
+    }
+
+    public void setAliasFileName(String aliasFileName) {
+        this.aliasFileName = aliasFileName;
+    }
+
     public HttpServletRequest getRequest() {
         return request;
     }
@@ -86,6 +111,64 @@ public class FormParser {
     public void setToAddress(String toAddress) {
         this.toAddress = toAddress;
     }
+
+    public String getUploadTargetDir() {
+        return uploadTargetDir;
+    }
+
+    public void setUploadTargetDir(String uploadTargetDir) {
+        this.uploadTargetDir = uploadTargetDir;
+    }
+
+    public boolean getIsReservation() {
+        return isReservation;
+    }
+
+    public void setIsReservation(boolean isReservation) {
+        this.isReservation = isReservation;
+    }
+
+    public String getYear() {
+        return year;
+    }
+
+    public void setYear(String year) {
+        this.year = year;
+    }
+
+    public String getMomth() {
+        return momth;
+    }
+
+    public void setMomth(String momth) {
+        this.momth = momth;
+    }
+
+    public String getDay() {
+        return day;
+    }
+
+    public void setDay(String day) {
+        this.day = day;
+    }
+
+    public String getHour() {
+        return hour;
+    }
+
+    public void setHour(String hour) {
+        this.hour = hour;
+    }
+
+    public String getMinute() {
+        return minute;
+    }
+
+    public void setMinute(String minute) {
+        this.minute = minute;
+    }
+    
+    
 
     public void parse() {
         try {
@@ -116,6 +199,17 @@ public class FormParser {
                         setSubject(item);
                     } else if (fieldName.equals("body")) {
                         setBody(item);
+                    } else if (fieldName.equals("reservation")) {
+                        // 예약메일 설정 여부 확인
+                        setIsReservation(true);
+                    } else if (fieldName.equals("date")) {
+                        // 예약메일 시간 저장
+                        // yyyy-MM-ddThh:mm 포맷 적용
+                        setYear(item.substring(0, 4));
+                        setMomth(item.substring(5, 7));
+                        setDay(item.substring(8, 10));
+                        setHour(item.substring(11, 13));
+                        setMinute(item.substring(14, 16));
                     }
                 } else {  // 6. 첨부 파일 처리
                     if (!(fi.getName() == null || fi.getName().equals(""))) {
@@ -124,6 +218,7 @@ public class FormParser {
 
                         // 절대 경로 저장
                         setFileName(uploadTargetDir + "/" + fi.getName());
+                        setAliasFileName(fi.getName());
                         File fn = new File(fileName);
                         // upload 완료. 추후 메일 전송후 해당 파일을 삭제하도록 해야 함.
                         if (fileName != null) {
