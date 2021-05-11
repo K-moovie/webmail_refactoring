@@ -9,7 +9,7 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@page import="cse.maven_webmail.control.CommandType"%>
 
-<!DOCTYPE html>
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN""http://www.w3.org/TR/html4/loose.dtd">
 
 <%
             if (session.isNew()) {
@@ -22,7 +22,8 @@
 
 <html>
     <head>
-        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <title>로그인 화면</title>
         <link type="text/css" rel="stylesheet" href="css/main_style.css" />
     </head>

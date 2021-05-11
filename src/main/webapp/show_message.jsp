@@ -17,9 +17,12 @@
 
 <html>
     <head>
-        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <title>메일 보기 화면</title>
         <link type="text/css" rel="stylesheet" href="css/main_style.css" />
+        <script src="//mozilla.github.io/pdf.js/build/pdf.js"></script>
+
     </head>
     <body>
         <jsp:include page="header.jsp" />
@@ -32,7 +35,11 @@
             <% pop3.setRequest(request); %>
             <%= pop3.getMessage(Integer.parseInt((String) request.getParameter("msgid")))%>
         </div>
+       <a href="https://github.com/Bo-Yeong/pdftest/blob/main/sample.pdf">view</a>
+       <br>
+       <iframe src="https://www.koreascience.or.kr/article/CFKO201831342441249.pdf" style="width:500px; height:300px; border:1px solid #00c;"></iframe>
 
+  
 
         <jsp:include page="footer.jsp" />
 
