@@ -86,19 +86,22 @@ public class WriteMailHandler extends HttpServlet {
                 String User = "root";
                 String Password = "1234";
                 conn = DriverManager.getConnection(url, User, Password);
-                String sql = "INSERT INTO reservation_mail(toaddr, ccaddr, subject, body, filename, file) VALUES (?,?,?,?,?,?)";
+                String sql = "INSERT INTO reservation_mail(host, user_id, toaddr, ccaddr, subject, body, filename, file, reservation_date) VALUES (?,?,?,?,?,?,?,?,?)";
+                StringBuilder date = new StringBuilder();
                 pstmt = conn.prepareStatement(sql);
-                pstmt.setString(1, parser.getToAddress());
-                pstmt.setString(2, parser.getCcAddress());
-                pstmt.setString(3, parser.getSubject());
-                pstmt.setString(4, parser.getBody());
+                pstmt.setString(1, host);
+                pstmt.setString(2, userid);
+                pstmt.setString(3, parser.getToAddress());
+                pstmt.setString(4, parser.getCcAddress());
+                pstmt.setString(5, parser.getSubject());
+                pstmt.setString(6, parser.getBody());
+                pstmt.setTimestamp(9, new java.sql.Timestamp(parser.getReservationDate().getTime()));
                 // 첨부파일이 존재하지 않을 때
                 if (parser.getFileName() == null || (parser.getFileName().equals(""))) {
-                    pstmt.setNull(5, java.sql.Types.VARCHAR);
-                    pstmt.setNull(6, java.sql.Types.BLOB);
+                    pstmt.setNull(7, java.sql.Types.VARCHAR);
+                    pstmt.setNull(8, java.sql.Types.BLOB);
                 }
                 else {
-                    System.out.println("*****************RESERVATION MAIL");
                     // 첨부파일을 보내기 위한 사전 작업.
                     String fileName = parser.getFileName();
                     System.out.println(parser.getFileName());
@@ -107,8 +110,8 @@ public class WriteMailHandler extends HttpServlet {
                     fileStream = new FileInputStream(file);
                     int fileSize = 0;
                     fileSize = (int) file.length();
-                    pstmt.setString(5, parser.getAliasFileName());
-                    pstmt.setBinaryStream(6, fileStream, fileSize);
+                    pstmt.setString(7, parser.getAliasFileName());
+                    pstmt.setBinaryStream(8, fileStream, fileSize);
                 }
                 
                 int count = pstmt.executeUpdate();
@@ -135,7 +138,6 @@ public class WriteMailHandler extends HttpServlet {
         // END IF 예약 전송
         }
         else {
-            System.out.println("***********");
             // 4. SmtpAgent 객체에 메일 관련 정보 설정
             SmtpAgent agent = new SmtpAgent(host, userid);
             agent.setTo(parser.getToAddress());
@@ -195,8 +197,6 @@ public class WriteMailHandler extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         processRequest(request, response);
-
-
     }
 
     /** 

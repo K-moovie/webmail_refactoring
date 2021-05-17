@@ -5,6 +5,8 @@
 package cse.maven_webmail.model;
 
 import java.io.File;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import javax.servlet.http.HttpServletRequest;
@@ -28,12 +30,14 @@ public class FormParser {
     private String uploadTargetDir = "C:/temp/upload";
     // 202105 KYH - @ 예약 여부 및 예약 시간 추가
     private boolean isReservation = false;
-    private String year = null;
-    private String momth = null;
-    private String day = null;
-    private String hour = null;
-    private String minute = null;
+    private Date reservationDate = null;
     private String aliasFileName = null;
+//    private String year = null;
+//    private String momth = null;
+//    private String day = null;
+//    private String hour = null;
+//    private String minute = null;
+    
 
     public FormParser(HttpServletRequest request) {
         this.request = request;
@@ -128,45 +132,53 @@ public class FormParser {
         this.isReservation = isReservation;
     }
 
-    public String getYear() {
-        return year;
+    public Date getReservationDate() {
+        return reservationDate;
     }
 
-    public void setYear(String year) {
-        this.year = year;
+    public void setReservationDate(Date reservationDate) {
+        this.reservationDate = reservationDate;
     }
 
-    public String getMomth() {
-        return momth;
-    }
-
-    public void setMomth(String momth) {
-        this.momth = momth;
-    }
-
-    public String getDay() {
-        return day;
-    }
-
-    public void setDay(String day) {
-        this.day = day;
-    }
-
-    public String getHour() {
-        return hour;
-    }
-
-    public void setHour(String hour) {
-        this.hour = hour;
-    }
-
-    public String getMinute() {
-        return minute;
-    }
-
-    public void setMinute(String minute) {
-        this.minute = minute;
-    }
+//    public String getYear() {
+//        return year;
+//    }
+//
+//    public void setYear(String year) {
+//        this.year = year;
+//    }
+//
+//    public String getMomth() {
+//        return momth;
+//    }
+//
+//    public void setMomth(String momth) {
+//        this.momth = momth;
+//    }
+//
+//    public String getDay() {
+//        return day;
+//    }
+//
+//    public void setDay(String day) {
+//        this.day = day;
+//    }
+//
+//    public String getHour() {
+//        return hour;
+//    }
+//
+//    public void setHour(String hour) {
+//        this.hour = hour;
+//    }
+//
+//    public String getMinute() {
+//        return minute;
+//    }
+//
+//    public void setMinute(String minute) {
+//        this.minute = minute;
+//    }
     
     
 
@@ -192,31 +204,46 @@ public class FormParser {
                     String item = fi.getString("UTF-8");
 
                     if (fieldName.equals("to")) {
-                        setToAddress(item);  // 200102 LJM - @ 이후의 서버 주소 제거
+                        if (item != null){
+                            setToAddress(item);
+                        }
+                        // 200102 LJM - @ 이후의 서버 주소 제거
                     } else if (fieldName.equals("cc")) {
-                        setCcAddress(item);
+                        if (item != null){
+                           setCcAddress(item); 
+                        }
                     } else if (fieldName.equals("subj")) {
-                        setSubject(item);
+                        if (item != null){
+                            setSubject(item);
+                        }                        
                     } else if (fieldName.equals("body")) {
-                        setBody(item);
+                        if (item != null){
+                            setBody(item);
+                        }
                     } else if (fieldName.equals("reservation")) {
                         // 예약메일 설정 여부 확인
                         setIsReservation(true);
                     } else if (fieldName.equals("date")) {
-                        // 예약메일 시간 저장
-                        // yyyy-MM-ddThh:mm 포맷 적용
-                        System.out.println(item);
                         if (getIsReservation()) {
-                            setYear(item.substring(0, 4));
-                            setMomth(item.substring(5, 7));
-                            setDay(item.substring(8, 10));
-                            setHour(item.substring(11, 13));
-                            setMinute(item.substring(14, 16));
+                            SimpleDateFormat transFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+                            Date date = transFormat.parse(item.replace("T", " "));
+                            setReservationDate(date);
                         }
+                        // 예약메일 시간 저장
+                        // 기존 year, month, day,,, 형식의 저장이 아닌
+                        // Date 타입의 변수로 저장.
+                        // yyyy-MM-ddThh:mm 포맷 적용
+//                        System.out.println(item);
+//                        if (getIsReservation()) {
+//                            setYear(item.substring(0, 4));
+//                            setMomth(item.substring(5, 7));
+//                            setDay(item.substring(8, 10));
+//                            setHour(item.substring(11, 13));
+//                            setMinute(item.substring(14, 16));
+//                        }
                     }
                 } else {  // 6. 첨부 파일 처리
                     if (!(fi.getName() == null || fi.getName().equals(""))) {
-                        System.out.println("$$$$$$$$$$$$$");
                         String fieldName = fi.getFieldName();
                         System.out.println("ATTACHED FILE : " + fieldName + " = " + fi.getName());
 
