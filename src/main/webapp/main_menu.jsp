@@ -16,7 +16,8 @@
 
 <html>
     <head>
-        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <title>주메뉴 화면</title>
         <link type="text/css" rel="stylesheet" href="css/main_style.css" />
     </head>
