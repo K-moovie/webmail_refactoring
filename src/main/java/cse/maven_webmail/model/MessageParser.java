@@ -46,6 +46,14 @@ public class MessageParser {
                 f.mkdir();
             }
         }
+        else if(System.getProperty("os.name").contains("Mac")) {
+            downloadTempDir = request.getServletContext().getRealPath("/WEB-INF")
+                    + File.separator + "download";
+            File f = new File(downloadTempDir);
+            if (!f.exists()) {
+                f.mkdir();
+            }
+        }
     }
 
     public boolean parse(boolean parseBody) {

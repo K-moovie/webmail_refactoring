@@ -13,6 +13,12 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import cse.maven_webmail.model.FormParser;
 import cse.maven_webmail.model.SmtpAgent;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStream;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 
 /**
  *
@@ -57,7 +63,9 @@ public class WriteMailHandler extends HttpServlet {
 
     private boolean sendMessage(HttpServletRequest request) {
         boolean status = false;
-
+        Connection conn = null;
+        PreparedStatement pstmt = null;
+        
         // 1. toAddress, ccAddress, subject, body, file1 정보를 파싱하여 추출
         FormParser parser = new FormParser(request);
         parser.parse();
@@ -68,24 +76,86 @@ public class WriteMailHandler extends HttpServlet {
         // 3. HttpSession 객체에서 메일 서버, 메일 사용자 ID 정보 얻기
         String host = (String) session.getAttribute("host");
         String userid = (String) session.getAttribute("userid");
-
-        // 4. SmtpAgent 객체에 메일 관련 정보 설정
-        SmtpAgent agent = new SmtpAgent(host, userid);
-        agent.setTo(parser.getToAddress());
-        agent.setCc(parser.getCcAddress());
-        agent.setSubj(parser.getSubject());
-        agent.setBody(parser.getBody());
-        String fileName = parser.getFileName();
-        System.out.println("WriteMailHandler.sendMessage() : fileName = " + fileName);
-        if (fileName != null) {
-            agent.setFile1(fileName);
+        
+        // 202105 KYH - @ 예약메일 여부 확인
+        if(parser.getIsReservation()){
+            try {
+                String className = "com.mysql.cj.jdbc.Driver";
+                Class.forName(className);
+                String url = "jdbc:mysql://localhost:3308/webmail?serverTimezone=Asia/Seoul";
+                String User = "root";
+                String Password = "1234";
+                conn = DriverManager.getConnection(url, User, Password);
+                String sql = "INSERT INTO reservation_mail(host, user_id, toaddr, ccaddr, subject, body, filename, file, reservation_date) VALUES (?,?,?,?,?,?,?,?,?)";
+                StringBuilder date = new StringBuilder();
+                pstmt = conn.prepareStatement(sql);
+                pstmt.setString(1, host);
+                pstmt.setString(2, userid);
+                pstmt.setString(3, parser.getToAddress());
+                pstmt.setString(4, parser.getCcAddress());
+                pstmt.setString(5, parser.getSubject());
+                pstmt.setString(6, parser.getBody());
+                pstmt.setTimestamp(9, new java.sql.Timestamp(parser.getReservationDate().getTime()));
+                // 첨부파일이 존재하지 않을 때
+                if (parser.getFileName() == null || (parser.getFileName().equals(""))) {
+                    pstmt.setNull(7, java.sql.Types.VARCHAR);
+                    pstmt.setNull(8, java.sql.Types.BLOB);
+                }
+                else {
+                    // 첨부파일을 보내기 위한 사전 작업.
+                    String fileName = parser.getFileName();
+                    System.out.println(parser.getFileName());
+                    File file = new File(fileName);
+                    InputStream fileStream = null;
+                    fileStream = new FileInputStream(file);
+                    int fileSize = 0;
+                    fileSize = (int) file.length();
+                    pstmt.setString(7, parser.getAliasFileName());
+                    pstmt.setBinaryStream(8, fileStream, fileSize);
+                }
+                
+                int count = pstmt.executeUpdate();
+                if (count >= 1) {
+                    StringBuilder Popup = new StringBuilder();
+                    Popup.append("<script>alert('예약전송 추가 완료'); location.href='index.jsp';</script>");
+                    System.out.println(Popup.toString());
+                } else {
+                    StringBuilder Popup = new StringBuilder();
+                    Popup.append("<script>alert('예약전송 추가 실패- 서버 상태를 확인하세요.'); window.history.back();</script>");
+                    System.out.println("******" + Popup.toString());
+                }
+                pstmt.close();
+                conn.close();
+                return true;
+            } catch (Exception ex) {
+                System.out.println("시스템 접속에 실패했습니다.");
+                System.out.println(ex.getMessage());
+                ex.printStackTrace();
+                return false;
+            } finally{
+                System.out.flush();
+            }
+        // END IF 예약 전송
         }
+        else {
+            // 4. SmtpAgent 객체에 메일 관련 정보 설정
+            SmtpAgent agent = new SmtpAgent(host, userid);
+            agent.setTo(parser.getToAddress());
+            agent.setCc(parser.getCcAddress());
+            agent.setSubj(parser.getSubject());
+            agent.setBody(parser.getBody());
+            String fileName = parser.getFileName();
+            System.out.println("WriteMailHandler.sendMessage() : fileName = " + fileName);
+            if (fileName != null) {
+                agent.setFile1(fileName);
+            }
 
-        // 5. 메일 전송 권한 위임
-        if (agent.sendMessage()) {
-            status = true;
+            // 5. 메일 전송 권한 위임
+            if (agent.sendMessage()) {
+                status = true;
+            }
+            return status;
         }
-        return status;
     }  // sendMessage()
 
     private String getMailTransportPopUp(boolean success) {
@@ -127,8 +197,6 @@ public class WriteMailHandler extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         processRequest(request, response);
-
-
     }
 
     /** 

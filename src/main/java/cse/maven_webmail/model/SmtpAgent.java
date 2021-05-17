@@ -6,6 +6,7 @@ package cse.maven_webmail.model;
 
 import com.sun.mail.smtp.SMTPMessage;
 import java.io.File;
+import java.io.InputStream;
 import java.util.Properties;
 import javax.activation.DataHandler;
 import javax.activation.DataSource;
@@ -18,6 +19,7 @@ import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMultipart;
 import javax.mail.internet.MimeUtility;
+import javax.mail.util.ByteArrayDataSource;
 
 /**
  *
@@ -32,6 +34,8 @@ public class SmtpAgent {
     protected String subj = null;
     protected String body = null;
     protected String file1 = null;
+    protected InputStream fileStream = null;
+    protected boolean isReservationMail = false;
 
     public SmtpAgent(String host, String userid) {
         this.host = host;
@@ -94,6 +98,22 @@ public class SmtpAgent {
         this.file1 = file1;
     }
 
+    public InputStream getFileStream() {
+        return fileStream;
+    }
+
+    public void setFileStream(InputStream fileStream) {
+        this.fileStream = fileStream;
+    }
+
+    public boolean getIsReservationMail() {
+        return isReservationMail;
+    }
+
+    public void setIsReservationMail(boolean isReservationMail) {
+        this.isReservationMail = isReservationMail;
+    }
+    
     // LJM 100418 -  현재 로그인한 사용자의 이메일 주소를 반영하도록 수정되어야 함. - test only
     // LJM 100419 - 일반 웹 서버와의 SMTP 동작시 setFrom() 함수 사용 필요함.
     //              없을 경우 메일 전송이 송신주소가 없어서 걸러짐.
@@ -142,9 +162,20 @@ public class SmtpAgent {
             mp.addBodyPart(mbp);
 
             // 첨부 파일 추가
-            if (this.file1 != null) {
+            if (this.file1 != null && !getIsReservationMail()) {
                 MimeBodyPart a1 = new MimeBodyPart();
                 DataSource src = new FileDataSource(this.file1);
+                a1.setDataHandler(new DataHandler(src));
+                int index = this.file1.lastIndexOf('/');
+                String fileName = this.file1.substring(index + 1);
+                // "B": base64, "Q": quoted-printable
+                a1.setFileName(MimeUtility.encodeText(fileName, "UTF-8", "B"));
+                mp.addBodyPart(a1);
+            }
+            // 예약메일일 때
+            if(this.file1 != null && getIsReservationMail()) {
+                MimeBodyPart a1 = new MimeBodyPart();
+                DataSource src = new ByteArrayDataSource(this.fileStream, "application/octet-stream");
                 a1.setDataHandler(new DataHandler(src));
                 int index = this.file1.lastIndexOf('/');
                 String fileName = this.file1.substring(index + 1);
@@ -159,7 +190,7 @@ public class SmtpAgent {
 
             // 메일 전송 완료되었으므로 서버에 저장된
             // 첨부 파일 삭제함
-            if (this.file1 != null) {
+            if (this.file1 != null && !getIsReservationMail()) {
                 File f = new File(this.file1);
                 if (!f.delete()) {
                     System.err.println(this.file1 + " 파일 삭제가 제대로 안 됨.");
