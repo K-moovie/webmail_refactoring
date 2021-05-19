@@ -13,6 +13,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import cse.maven_webmail.model.Pop3Agent;
+import java.util.Enumeration;
+import java.util.Hashtable;
+import java.util.Map.Entry;
+import javax.servlet.http.HttpSessionBindingEvent;
+import javax.servlet.http.HttpSessionBindingListener;
 
 /**
  *
@@ -28,7 +33,49 @@ public class LoginHandler extends HttpServlet {
      * @throws IOException if an I/O error occurs
      */
     private final String ADMINISTRATOR = "admin";
+    private static Hashtable loginUsers = new Hashtable();
 
+    
+//    //해당 세션에 이미 로그인 되있는지 체크
+//    public boolean isLogin(String sessionID)
+//    {
+//        boolean isLogin = false;
+//        Enumeration e = loginUsers.keys();
+//        String key = "";
+//        while(e.hasMoreElements())
+//        {
+//            key = (String)e.nextElement();
+//            if(sessionID.equals(key))
+//            {
+//                isLogin = true;
+//            }
+//        }
+//        return isLogin;
+//    }
+    
+    //중복 로그인 막기 위해 아이디 사용중인지 체크
+    public boolean isUsing(String userID)
+    {
+        // Debug 해당 HashTable의 내용 확인  
+//        loginUsers.forEach((k, v) -> {
+//            System.out.println(k);
+//            System.out.println(v);  
+//        });
+        
+        boolean isUsing = false;
+        Enumeration e = loginUsers.keys();
+        String key = "";
+        while(e.hasMoreElements())
+        {
+            key = (String)e.nextElement();
+            if(userID.equals(loginUsers.get(key)))
+            {
+                isUsing = true;
+            }
+        }
+        return isUsing;
+    }
+    
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
@@ -49,27 +96,35 @@ public class LoginHandler extends HttpServlet {
                     // Check the login information is valid using <<model>>Pop3Agent.
                     Pop3Agent pop3Agent = new Pop3Agent(host, userid, password);
                     boolean isLoginSuccess = pop3Agent.validate();
-
-                    // Now call the correct page according to its validation result.
-                    if (isLoginSuccess) {
-                        if (isAdmin(userid)) {
-                            // HttpSession 객체에 userid를 등록해 둔다.
-                            session.setAttribute("userid", userid);
-                            response.sendRedirect("admin_menu.jsp");
+                    if (!isUsing(userid)) {
+                        // Now call the correct page according to its validation result.
+                        if (isLoginSuccess) {
+                            if (isAdmin(userid)) {
+                                // HttpSession 객체에 userid를 등록해 둔다.
+                                session.setAttribute("userid", userid);
+                                response.sendRedirect("admin_menu.jsp");
+                            } else {
+                                // HttpSession 객체에 userid와 password를 등록해 둔다.
+                                session.setAttribute("userid", userid);
+                                session.setAttribute("password", password);
+                                loginUsers.put(session.getId(), userid);
+                                response.sendRedirect("main_menu.jsp");
+                            }
                         } else {
-                            // HttpSession 객체에 userid와 password를 등록해 둔다.
-                            session.setAttribute("userid", userid);
-                            session.setAttribute("password", password);
-                            response.sendRedirect("main_menu.jsp");
+                            RequestDispatcher view = request.getRequestDispatcher("login_fail.jsp");
+                            view.forward(request, response);
+    //                        response.sendRedirect("login_fail.jsp");
                         }
-                    } else {
-                        RequestDispatcher view = request.getRequestDispatcher("login_fail.jsp");
-                        view.forward(request, response);
-//                        response.sendRedirect("login_fail.jsp");
+                        break;
                     }
-                    break;
+                    else {
+                        RequestDispatcher view = request.getRequestDispatcher("login_duplicate.jsp");
+                        view.forward(request, response);
+                    }
+                    
                 case CommandType.LOGOUT:
                     out = response.getWriter();
+                    loginUsers.remove(session.getId());
                     session.invalidate();
 //                    response.sendRedirect(homeDirectory);
                     response.sendRedirect(getServletContext().getInitParameter("HomeDirectory"));
