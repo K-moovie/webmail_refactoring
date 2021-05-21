@@ -6,6 +6,7 @@
 package cse.maven_webmail.util;
 
 import cse.maven_webmail.model.SmtpAgent;
+import cse.maven_webmail.model.loadDBConfig;
 import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -32,10 +33,10 @@ public class ReservationExecutor implements Job {
     public void execute(JobExecutionContext jobExecutionContext) throws JobExecutionException { 
         Connection conn = null;
         PreparedStatement pstmt = null;
-        String className = "com.mysql.cj.jdbc.Driver";
-        String url = "jdbc:mysql://localhost:3308/webmail?serverTimezone=Asia/Seoul";
-        String User = "root";
-        String Password = "1234";
+        String className = loadDBConfig.getInstance().getDriver();
+        String url = loadDBConfig.getInstance().getUrl();
+        String User = loadDBConfig.getInstance().getId();
+        String Password = loadDBConfig.getInstance().getPw();
         ArrayList<Integer> finish_list = new ArrayList<>();
         try {
             Class.forName(className);
