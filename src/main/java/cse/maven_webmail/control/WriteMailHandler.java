@@ -4,6 +4,7 @@
  */
 package cse.maven_webmail.control;
 
+
 import java.io.IOException;
 import java.io.PrintWriter;
 import javax.servlet.ServletException;
@@ -13,6 +14,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import cse.maven_webmail.model.FormParser;
 import cse.maven_webmail.model.SmtpAgent;
+import cse.maven_webmail.model.loadDBConfig;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
@@ -80,11 +82,11 @@ public class WriteMailHandler extends HttpServlet {
         // 202105 KYH - @ 예약메일 여부 확인
         if(parser.getIsReservation()){
             try {
-                String className = "com.mysql.cj.jdbc.Driver";
-                Class.forName(className);
-                String url = "jdbc:mysql://localhost:3308/webmail?serverTimezone=Asia/Seoul";
-                String User = "root";
-                String Password = "1234";
+                String className = loadDBConfig.getInstance().getDriver();
+                String url = loadDBConfig.getInstance().getUrl();
+                String User = loadDBConfig.getInstance().getId();
+                String Password = loadDBConfig.getInstance().getPw();
+                Class.forName(loadDBConfig.getInstance().getDriver());
                 conn = DriverManager.getConnection(url, User, Password);
                 String sql = "INSERT INTO reservation_mail(host, user_id, toaddr, ccaddr, subject, body, filename, file, reservation_date) VALUES (?,?,?,?,?,?,?,?,?)";
                 StringBuilder date = new StringBuilder();
