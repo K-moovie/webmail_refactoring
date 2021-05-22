@@ -117,6 +117,10 @@ public class MessageParser {
                 body = (String) p.getContent();
                 if (p.isMimeType("text/plain")) {
                     body = body.replaceAll("\r\n", " <br>");
+                    // 202105 KYH Reflected XSS 공격 방어 기능 추가
+                    body = body.replaceAll("<", "&lt;");
+                    body = body.replaceAll(">", "&gt;");
+                    body = body.replaceAll("alert", "x-alert");
                 }
             } else if (p.isMimeType("multipart/alternative")) {
                 // html text보다  plain text 선호
