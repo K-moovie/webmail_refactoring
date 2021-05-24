@@ -36,22 +36,31 @@ public class Delete extends HttpServlet {
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
         try ( PrintWriter out = response.getWriter()) {
+             /*
+            String className = loadDBConfig.getInstance().getDriver();
+            String url = loadDBConfig.getInstance().getUrl();
+            String User = loadDBConfig.getInstance().getId();
+            String Password = loadDBConfig.getInstance().getPw();
+            */
            final String JdbcDriver = "com.mysql.cj.jdbc.Driver";
             final String JdbcUrl = "jdbc:mysql://localhost:3306/webmail?serverTimezone=Asia/Seoul";
             final String User = "jdbctester";
             final String Password = "4002017";
             
             try{
-                String subj = request.getParameter("delsubj");
-                
+                String delSubj = request.getParameter("delsubj");
+                /*
+                Class.forName(loadDBConfig.getInstance().getDriver());
+                Connection conn = DriverManager.getConnection(url, User, Password);
+                */
                 Class.forName(JdbcDriver);
                 Connection conn = DriverManager.getConnection(JdbcUrl,User,Password);
-                String sql = "DELETE FROM save WHERE subj='" + subj + "';" ;  //idx로 바꿔야함
+                String sql = "DELETE FROM save WHERE subj='" + delSubj + "';" ;  //idx로 바꿔야함
                 
                 PreparedStatement pstmt = conn.prepareStatement(sql);
                 request.setCharacterEncoding("UTF-8");
                
-                if (!(subj == null) && !subj.equals("")) {  //idx
+                if (!(delSubj == null) && !delSubj.equals("")) {  //idx
                     pstmt.executeUpdate();
                 }
                 

@@ -36,12 +36,22 @@ public class Storage extends HttpServlet {
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
         try ( PrintWriter out = response.getWriter()) {
+            /*
+            String className = loadDBConfig.getInstance().getDriver();
+            String url = loadDBConfig.getInstance().getUrl();
+            String User = loadDBConfig.getInstance().getId();
+            String Password = loadDBConfig.getInstance().getPw();
+            */
             final String JdbcDriver = "com.mysql.cj.jdbc.Driver";
             final String JdbcUrl = "jdbc:mysql://localhost:3306/webmail?serverTimezone=Asia/Seoul";
             final String User = "jdbctester";
             final String Password = "4002017";
             
             try{
+                /*
+                Class.forName(loadDBConfig.getInstance().getDriver());
+                Connection conn = DriverManager.getConnection(url, User, Password);
+                */
                 Class.forName(JdbcDriver);
                 Connection conn = DriverManager.getConnection(JdbcUrl,User,Password);
                 String sql = "INSERT INTO save(user,recv,cc,subj,body,date) VALUES (?,?,?,?,?,?)";
@@ -49,7 +59,8 @@ public class Storage extends HttpServlet {
                 
                 request.setCharacterEncoding("UTF-8");
                              
-                if (!(request.getParameter("subj") == null) && !request.getParameter("subj").equals("")) {      
+                if (!(request.getParameter("subj") == null) && !request.getParameter("subj").equals("")) {
+                    
                     String user =  request.getParameter("user");
                     String recv = request.getParameter("to");
                     String cc = request.getParameter("cc");
@@ -66,7 +77,9 @@ public class Storage extends HttpServlet {
                     
                     pstmt.executeUpdate();
                 }else{
-                    
+                    response.setContentType("text/html; charset=UTF-8");
+                    out.println("<script>alert('제목을 입력해주세요!'); history.back(-1); </script>");
+                    out.flush();
                 }
                 
                 pstmt.close();

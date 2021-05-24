@@ -18,20 +18,31 @@
     <jsp:include page="header.jsp" />
                 
          <%
+            /*
+            String className = loadDBConfig.getInstance().getDriver();
+            String url = loadDBConfig.getInstance().getUrl();
+            String User = loadDBConfig.getInstance().getId();
+            String Password = loadDBConfig.getInstance().getPw();
+            */
             final String JdbcDriver = "com.mysql.cj.jdbc.Driver";
             final String JdbcUrl = "jdbc:mysql://localhost:3306/webmail?serverTimezone=Asia/Seoul";
             final String User = "jdbctester";
             final String Password = "4002017";
             
             try{
+           /*
+            Class.forName(loadDBConfig.getInstance().getDriver());
+            Connection conn = DriverManager.getConnection(url, User, Password);
+           */
             Class.forName(JdbcDriver);
             Connection conn = DriverManager.getConnection(JdbcUrl,User,Password);
             Statement stmt = conn.createStatement();
             
-            String sql = "SELECT * FROM save" ;
+            String sql = "SELECT * FROM save where user ='" + session.getAttribute("userid") + "';" ;
             ResultSet rs = stmt.executeQuery(sql);
             %>
             
+            <center>
             <table border="1">
                 <thead>
                     <tr>
@@ -69,6 +80,7 @@
                      %>
                 </tbody>
             </table>
+            </center>
                 
             <%
                 }catch(Exception ex){
