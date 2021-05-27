@@ -3,6 +3,7 @@
     Author     : lee-yejin
 --%>
 
+<%@page import="cse.maven_webmail.model.loadDBConfig"%>
 <%@page import="java.sql.ResultSet"%>
 <%@page import="java.sql.Statement"%>
 <%@page import="java.sql.DriverManager"%>
@@ -18,26 +19,16 @@
     <jsp:include page="header.jsp" />
                 
          <%
-            /*
             String className = loadDBConfig.getInstance().getDriver();
             String url = loadDBConfig.getInstance().getUrl();
             String User = loadDBConfig.getInstance().getId();
             String Password = loadDBConfig.getInstance().getPw();
-            */
-            final String JdbcDriver = "com.mysql.cj.jdbc.Driver";
-            final String JdbcUrl = "jdbc:mysql://113.198.235.233:20002/webmail?serverTimezone=Asia/Seoul";
-            final String User = "team7";
-            final String Password = "1234";
-            
             try{
-           /*
+           
             Class.forName(loadDBConfig.getInstance().getDriver());
             Connection conn = DriverManager.getConnection(url, User, Password);
-           */
-            Class.forName(JdbcDriver);
-            Connection conn = DriverManager.getConnection(JdbcUrl,User,Password);
+                     
             Statement stmt = conn.createStatement();
-            
             String sql = "SELECT * FROM save where user ='" + session.getAttribute("userid") + "'" ;
             ResultSet rs = stmt.executeQuery(sql);
             %>

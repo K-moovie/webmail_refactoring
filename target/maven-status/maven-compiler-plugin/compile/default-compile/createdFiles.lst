@@ -3,6 +3,7 @@ cse\maven_webmail\util\ReservationScheduler.class
 cse\maven_webmail\control\LoginHandler.class
 cse\maven_webmail\model\UserAdminAgent.class
 cse\maven_webmail\storage\Storage.class
+cse\maven_webmail\model\loadDBConfig.class
 cse\maven_webmail\model\MessageFormatter.class
 cse\maven_webmail\control\ReadMailHandler.class
 cse\maven_webmail\storage\Delete.class

@@ -5,6 +5,7 @@
  */
 package cse.maven_webmail.storage;
 
+import cse.maven_webmail.model.loadDBConfig;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.Connection;
@@ -36,24 +37,17 @@ public class Storage extends HttpServlet {
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
         try ( PrintWriter out = response.getWriter()) {
-            /*
+            
             String className = loadDBConfig.getInstance().getDriver();
             String url = loadDBConfig.getInstance().getUrl();
             String User = loadDBConfig.getInstance().getId();
             String Password = loadDBConfig.getInstance().getPw();
-            */
-            final String JdbcDriver = "com.mysql.cj.jdbc.Driver";
-            final String JdbcUrl = "jdbc:mysql://113.198.235.233:20002/webmail?serverTimezone=Asia/Seoul";
-            final String User = "team7";
-            final String Password = "1234";
             
             try{
-                /*
+                
                 Class.forName(loadDBConfig.getInstance().getDriver());
                 Connection conn = DriverManager.getConnection(url, User, Password);
-                */
-                Class.forName(JdbcDriver);
-                Connection conn = DriverManager.getConnection(JdbcUrl,User,Password);
+                
                 String sql = "INSERT INTO save(user,recv,cc,subj,body,date) VALUES (?,?,?,?,?,?)";
                 PreparedStatement pstmt = conn.prepareStatement(sql);
                 
