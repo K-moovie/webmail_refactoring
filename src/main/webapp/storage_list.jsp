@@ -25,9 +25,9 @@
             String Password = loadDBConfig.getInstance().getPw();
             */
             final String JdbcDriver = "com.mysql.cj.jdbc.Driver";
-            final String JdbcUrl = "jdbc:mysql://localhost:3306/webmail?serverTimezone=Asia/Seoul";
-            final String User = "jdbctester";
-            final String Password = "4002017";
+            final String JdbcUrl = "jdbc:mysql://113.198.235.233:20002/webmail?serverTimezone=Asia/Seoul";
+            final String User = "team7";
+            final String Password = "1234";
             
             try{
            /*
@@ -38,7 +38,7 @@
             Connection conn = DriverManager.getConnection(JdbcUrl,User,Password);
             Statement stmt = conn.createStatement();
             
-            String sql = "SELECT * FROM save where user ='" + session.getAttribute("userid") + "';" ;
+            String sql = "SELECT * FROM save where user ='" + session.getAttribute("userid") + "'" ;
             ResultSet rs = stmt.executeQuery(sql);
             %>
             
@@ -69,7 +69,7 @@
                         
                         <td>
                              <form action ="Delete">
-                                <input type="hidden" name="delsubj" value="<%=rs.getString("subj")%>">
+                                <input type="hidden" name="idx" value="<%=rs.getInt("idx")%>">
                                 <input type="submit" value="삭제">
                              </form>
                         </tr>                       

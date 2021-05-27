@@ -43,9 +43,9 @@ public class Storage extends HttpServlet {
             String Password = loadDBConfig.getInstance().getPw();
             */
             final String JdbcDriver = "com.mysql.cj.jdbc.Driver";
-            final String JdbcUrl = "jdbc:mysql://localhost:3306/webmail?serverTimezone=Asia/Seoul";
-            final String User = "jdbctester";
-            final String Password = "4002017";
+            final String JdbcUrl = "jdbc:mysql://113.198.235.233:20002/webmail?serverTimezone=Asia/Seoul";
+            final String User = "team7";
+            final String Password = "1234";
             
             try{
                 /*

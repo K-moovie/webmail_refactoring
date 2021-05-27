@@ -16,6 +16,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+
 /**
  *
  * @author lee-yejin
@@ -43,24 +44,25 @@ public class Delete extends HttpServlet {
             String Password = loadDBConfig.getInstance().getPw();
             */
            final String JdbcDriver = "com.mysql.cj.jdbc.Driver";
-            final String JdbcUrl = "jdbc:mysql://localhost:3306/webmail?serverTimezone=Asia/Seoul";
-            final String User = "jdbctester";
-            final String Password = "4002017";
+            final String JdbcUrl = "jdbc:mysql://113.198.235.233:20002/webmail?serverTimezone=Asia/Seoul";
+            final String User = "team7";
+            final String Password = "1234";
             
             try{
-                String delSubj = request.getParameter("delsubj");
+                String idx = request.getParameter("idx");
+                
                 /*
                 Class.forName(loadDBConfig.getInstance().getDriver());
                 Connection conn = DriverManager.getConnection(url, User, Password);
                 */
                 Class.forName(JdbcDriver);
                 Connection conn = DriverManager.getConnection(JdbcUrl,User,Password);
-                String sql = "DELETE FROM save WHERE subj='" + delSubj + "';" ;  //idx로 바꿔야함
+                String sql = "DELETE FROM save WHERE idx='" + idx + "';" ;
                 
                 PreparedStatement pstmt = conn.prepareStatement(sql);
                 request.setCharacterEncoding("UTF-8");
                
-                if (!(delSubj == null) && !delSubj.equals("")) {  //idx
+                if (!(idx == null) && !idx.equals("")) {
                     pstmt.executeUpdate();
                 }
                 

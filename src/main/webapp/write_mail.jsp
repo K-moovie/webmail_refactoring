@@ -29,9 +29,8 @@
         <jsp:include page="header.jsp" />
         
         <div id="main">
-            <form method="POST"
+            <form name="frm" method="POST" enctype="multipart/form-data"
                   action="WriteMail.do?menu=<%= CommandType.SEND_MAIL_COMMAND%>" >
-                <!-- <form  enctype="multipart/form-data" -->
                 <table>
                     <tr>
                         <td> 수신 </td>
@@ -72,7 +71,12 @@
                         <td colspan="2">
                             <input type="submit" value="메일 보내기">
                             <input type="reset" value="다시 입력">
-                            <input type="submit" value="임시저장" formaction = "Storage">
+                            <input type="button" value="임시저장" onclick="doSubmit()" >
+                            <script>
+                                function doSubmit(){ frm.action = "Storage";
+                                    frm.encoding = "application/x-www-form-urlencoded";
+                                    frm.submit(); }
+                            </script>
                             <a href ="storage_list.jsp"> 임시저장 메일 목록</>
                         </td>
                     </tr>
