@@ -18,6 +18,7 @@ import cse.maven_webmail.model.UserAdminAgent;
  * @author jongmin
  */
 public class UserAdminHandler extends HttpServlet {
+    int user_code = 0; //1:관리자 2:신규
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -33,17 +34,30 @@ public class UserAdminHandler extends HttpServlet {
         response.setContentType("text/html;charset=UTF-8");
         try (PrintWriter out = response.getWriter()) {
             HttpSession session = request.getSession();
-            String userid = (String) session.getAttribute("userid");
+
+            request.setCharacterEncoding("UTF-8");
+            int select = Integer.parseInt((String) request.getParameter("menu"));
+
+            String userid = "";
+
+            if(select == CommandType.ADD_USER_MENU){
+                userid = "admin";
+                user_code = 2;
+            } else{
+                userid = (String) session.getAttribute("userid");
+                user_code = 1;
+            }
+
             if (userid == null || !userid.equals("admin")) {
                 out.println("현재 사용자(" + userid + ")의 권한으로 수행 불가합니다.");
                 out.println("<a href=/WebMailSystem/> 초기 화면으로 이동 </a>");
                 return;
             } else {
-
-                request.setCharacterEncoding("UTF-8");
-                int select = Integer.parseInt((String) request.getParameter("menu"));
-
                 switch (select) {
+                    case CommandType.ADD_USER_MENU:
+                        register(request, response, out);
+                        break;
+
                     case CommandType.ADD_USER_COMMAND:
                         addUser(request, response, out);
                         break;
@@ -85,6 +99,36 @@ public class UserAdminHandler extends HttpServlet {
         }
     }
 
+    private void register(HttpServletRequest request, HttpServletResponse response, PrintWriter out) {
+        String server = "127.0.0.1";
+        int port = 4555;
+        try {
+            UserAdminAgent agent = new UserAdminAgent(server, port, this.getServletContext().getRealPath("."));
+            String userid = request.getParameter("id");  // for test
+            String password = request.getParameter("password");// for test
+            String password2 = request.getParameter("password2");// for test
+            out.flush();
+            boolean isMatched = password.equals(password2);
+            boolean isMatchedPWDrange = password.matches("^[a-zA-Z0-9]{8,10}$");
+            // if (addUser successful)  사용자 등록 성공 팦업창
+            // else 사용자 등록 실패 팝업창
+            if(isMatched && isMatchedPWDrange){
+                if (agent.addUser(userid, password)) {
+                    out.println(getUserRegistrationSuccessPopUp());
+                } else {
+                    out.println("password2 = " + password2 + "<br>");
+                    out.println(getUserRegistrationFailurePopUp());
+                }
+            } else {
+                out.println("비밀번호를 확인하세요." + "<br>");
+                out.println(getUserRegistrationFailurePopUp());
+            }
+            out.flush();
+        } catch (Exception ex) {
+            out.println("시스템 접속에 실패했습니다.");
+        }
+    }
+
     private String getUserRegistrationSuccessPopUp() {
         String alertMessage = "사용자 등록이 성공했습니다.";
         StringBuilder successPopUp = new StringBuilder();
@@ -100,7 +144,12 @@ public class UserAdminHandler extends HttpServlet {
         successPopUp.append("alert(\"");
         successPopUp.append(alertMessage);
         successPopUp.append("\"); ");
-        successPopUp.append("window.location = \"admin_menu.jsp\"; ");
+        if(user_code == 1){
+            successPopUp.append("window.location = \"admin_menu.jsp\"; ");
+        }
+        else if(user_code==2){
+            successPopUp.append("window.location = \"index.jsp\"; ");
+        }
         successPopUp.append("}  </script>");
         successPopUp.append("</body></html>");
         return successPopUp.toString();
@@ -121,7 +170,12 @@ public class UserAdminHandler extends HttpServlet {
         successPopUp.append("alert(\"");
         successPopUp.append(alertMessage);
         successPopUp.append("\"); ");
-        successPopUp.append("window.location = \"admin_menu.jsp\"; ");
+        if(user_code == 1){
+            successPopUp.append("window.location = \"admin_menu.jsp\"; ");
+        }
+        else if(user_code==2){
+            successPopUp.append("window.location = \"index.jsp\"; ");
+        }
         successPopUp.append("}  </script>");
         successPopUp.append("</body></html>");
         return successPopUp.toString();

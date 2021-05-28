@@ -19,6 +19,10 @@
         <servlet-class>cse.maven_webmail.control.UserAdminHandler</servlet-class>
     </servlet>
     <servlet>
+        <servlet-name>RegisterHandler</servlet-name>
+        <servlet-class>cse.maven_webmail.control.RegisterHandler</servlet-class>
+    </servlet>
+    <servlet>
         <servlet-name>WriteMailHandler</servlet-name>
         <servlet-class>cse.maven_webmail.control.WriteMailHandler</servlet-class>
     </servlet>
@@ -46,7 +50,7 @@
         <servlet-name>ReservationServlet</servlet-name>
         <servlet-class>cse.maven_webmail.util.ReservationScheduler</servlet-class>
         <load-on-startup>2</load-on-startup>
-    </servlet>    
+    </servlet>
     <servlet-mapping>
         <servlet-name>ReservationServlet</servlet-name>
         <url-pattern>/ReservationServlet.do</url-pattern>
@@ -59,8 +63,8 @@
     <welcome-file-list>
         <welcome-file>index.jsp</welcome-file>
     </welcome-file-list>
-    
-    
+
+
     <servlet>
         <servlet-name>QuartzInitializer</servlet-name>
         <servlet-class>org.quartz.ee.servlet.QuartzInitializerServlet</servlet-class>
