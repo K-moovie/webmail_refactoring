@@ -1,3 +1,5 @@
+cse/maven_webmail/storage/Storage.class
 cse/maven_webmail/util/ReservationScheduler.class
 cse/maven_webmail/util/ReservationExecutor.class
 cse/maven_webmail/model/loadDBConfig.class
+cse/maven_webmail/storage/Delete.class
