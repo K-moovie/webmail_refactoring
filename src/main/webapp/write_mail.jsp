@@ -70,9 +70,17 @@
                     <tr>
                         <td colspan="2">
                             <input type="submit" value="메일 보내기">
-                            <input type="reset" value="다시 입력">
+                            <input type="button" value="다시 입력" onclick="doReset()">
                             <input type="button" value="임시저장" onclick="doSubmit()" >
                             <script>
+                                function doReset(){
+                                    document.getElementsByName("to")[0].value="";
+                                    document.getElementsByName("cc")[0].value="";
+                                    document.getElementsByName("subj")[0].value="";
+                                    document.getElementsByName("date")[0].value="";
+                                    document.getElementsByName("body")[0].value="";
+                                }
+                                
                                 function doSubmit(){ frm.action = "Storage";
                                     frm.encoding = "application/x-www-form-urlencoded";
                                     frm.submit(); }
