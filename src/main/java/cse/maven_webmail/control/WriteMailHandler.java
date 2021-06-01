@@ -15,7 +15,7 @@ import javax.servlet.http.HttpSession;
 import cse.maven_webmail.model.FormParser;
 import cse.maven_webmail.model.SmtpAgent;
 import cse.maven_webmail.model.loadDBConfig;
-import jdk.internal.jline.internal.Nullable;
+//import jdk.internal.jline.internal.Nullable;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -42,29 +42,28 @@ public class WriteMailHandler extends HttpServlet {
         response.setContentType("text/html;charset=UTF-8");
 
         PrintWriter out = null;
-        if(out != null) {
-            try {
-                request.setCharacterEncoding("UTF-8");
-                int select = Integer.parseInt((String) request.getParameter("menu"));
 
-                switch (select) {
-                    case CommandType.SEND_MAIL_COMMAND: // 실제 메일 전송하기
-                        out = response.getWriter();
-                        boolean status = sendMessage(request);
-                        out.print(getMailTransportPopUp(status));
-                        break;
+        try {
+            request.setCharacterEncoding("UTF-8");
+            int select = Integer.parseInt((String) request.getParameter("menu"));
+            switch (select) {
+                case CommandType.SEND_MAIL_COMMAND: // 실제 메일 전송하기
+                    out = response.getWriter();
+                    boolean status = sendMessage(request);
+                    out.println(getMailTransportPopUp(status));
+                    break;
 
-                    default:
-                        out = response.getWriter();
-                        out.println("없는 메뉴를 선택하셨습니다. 어떻게 이 곳에 들어오셨나요?");
-                        break;
-                }
-            } catch (Exception ex) {
-                out.println(ex.toString());
-            } finally {
-                out.close();
+                default:
+                    out = response.getWriter();
+                    out.println("없는 메뉴를 선택하셨습니다. 어떻게 이 곳에 들어오셨나요?");
+                    break;
             }
+        } catch (Exception ex) {
+            out.println(ex.toString());
+        } finally {
+            out.close();
         }
+
     }
 
     private boolean sendMessage(HttpServletRequest request) {
