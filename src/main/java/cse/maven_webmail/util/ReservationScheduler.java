@@ -24,8 +24,8 @@ public class ReservationScheduler extends HttpServlet{
 
     
     private static final long serialVersionUID = -4013616887475315494L;
-    private SchedulerFactory schedulerFactory;
-    private Scheduler scheduler;
+    static private SchedulerFactory schedulerFactory;
+    static private Scheduler scheduler;
 
     public ReservationScheduler() {
         try {

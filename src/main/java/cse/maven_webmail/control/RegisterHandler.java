@@ -17,8 +17,8 @@ import java.sql.ResultSet;
 
 public class RegisterHandler extends HttpServlet {
 
-    Connection conn = null;
-    PreparedStatement pstmt = null;
+    static Connection conn = null;
+    static PreparedStatement pstmt = null;
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>

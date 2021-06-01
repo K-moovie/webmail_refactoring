@@ -45,10 +45,11 @@ public class Pop3Agent {
         } catch (Exception ex) {
             System.out.println("Pop3Agent.validate() error : " + ex);
             status = false;  // for clarity
-        } finally {
-            return status;
+
         }
+        return status;
     }
+
 
     public boolean deleteMessage(int msgid, boolean really_delete) {
         boolean status = false;
@@ -75,9 +76,8 @@ public class Pop3Agent {
             status = true;
         } catch (Exception ex) {
             System.out.println("deleteMessage() error: " + ex);
-        } finally {
-            return status;
         }
+        return status;
     }
 
     /*
@@ -112,9 +112,8 @@ public class Pop3Agent {
         } catch (Exception ex) {
             System.out.println("Pop3Agent.getMessageList() : exception = " + ex);
             result = "Pop3Agent.getMessageList() : exception = " + ex;
-        } finally {
-            return result;
         }
+        return result;
     }
 
     public String getMessage(int n) {
@@ -140,9 +139,8 @@ public class Pop3Agent {
         } catch (Exception ex) {
             System.out.println("Pop3Agent.getMessageList() : exception = " + ex);
             result = "Pop3Agent.getMessage() : exception = " + ex;
-        } finally {
-            return result;
         }
+        return result;
     }
 
     private boolean connectToStore() {
@@ -163,9 +161,8 @@ public class Pop3Agent {
             status = true;
         } catch (Exception ex) {
             exceptionType = ex.toString();
-        } finally {
-            return status;
         }
+        return status;
     }
 
     public String getHost() {

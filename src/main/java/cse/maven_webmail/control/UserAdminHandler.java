@@ -18,7 +18,7 @@ import cse.maven_webmail.model.UserAdminAgent;
  * @author jongmin
  */
 public class UserAdminHandler extends HttpServlet {
-    int user_code = 0; //1:관리자 2:신규
+    static int user_code = 0; //1:관리자 2:신규
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -206,7 +206,11 @@ public class UserAdminHandler extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+        try {
+            processRequest(request, response);
+        } catch (Exception ex) {
+
+        }
     }
 
     /**
@@ -220,7 +224,11 @@ public class UserAdminHandler extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+        try {
+            processRequest(request, response);
+        } catch (Exception ex) {
+
+        }
     }
 
     /**

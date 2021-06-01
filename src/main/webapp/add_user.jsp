@@ -8,7 +8,7 @@
 
 <!DOCTYPE html>
 
-<html>
+<html lang="en">
     <head>
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -27,7 +27,11 @@
 
             <form name="AddUser" action="UserAdmin.do?menu=<%= CommandType.ADD_USER_COMMAND%>"
                   method="POST">
-                <table border="0" align="left">
+                <table>
+                    <tr>
+                        <th scope="col">border="0"</th>
+                        <th scope="col">align="left"</th>
+                    </tr>
                     <tr>
                         <td>사용자 ID</td>
                         <td> <input type="text" name="id" value="" size="20" />  </td>

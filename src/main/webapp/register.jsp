@@ -3,7 +3,7 @@
 
 <!DOCTYPE html">
 
-<html>
+<html lang="en">
     <body>
     <head>
     <div id="main" style="width: 50%; margin-left: 25%; margin-right: 25%;">
@@ -18,7 +18,11 @@
 
                     <td>비밀번호는 영어 대소문자와 숫자 조합이며, 8~10자로 작성하세요! </td>
         <form name="AddUser" action="UserAdmin.do?menu=<%= CommandType.ADD_USER_MENU%>" method="POST">
-            <table border="0" align="left">
+            <table>
+                <tr>
+                    <th scope="col">border="0"</th>
+                    <th scope="col">align="left"</th>
+                </tr>
                 <tr>
                     <td>아이디 </td>
                     <td> <input type="id" name="id" value="" size="25" placeholder="ID"  maxlength="30" required>

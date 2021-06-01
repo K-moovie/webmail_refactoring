@@ -199,8 +199,7 @@ public class SmtpAgent {
             status = true;
         } catch (Exception ex) {
             System.out.println("sendMessage() error: " + ex);
-        } finally {
-            return status;
         }
+        return status;
     }  // sendMessage()
 }

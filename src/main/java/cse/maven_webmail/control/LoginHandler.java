@@ -159,11 +159,12 @@ public class LoginHandler extends HttpServlet {
      */
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException,
-            IOException {
-        processRequest(request, response);
+            throws ServletException, IOException {
+        try{
+            processRequest(request, response);
+        } catch(Exception ex){
 
-
+        }
     }
 
     /**
@@ -175,11 +176,12 @@ public class LoginHandler extends HttpServlet {
      */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException,
-            IOException {
-        processRequest(request, response);
+            throws ServletException, IOException {
+        try {
+            processRequest(request, response);
+        } catch (Exception ex) {
 
-
+        }
     }
 
     /**

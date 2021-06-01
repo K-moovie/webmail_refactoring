@@ -105,10 +105,9 @@ public class UserAdminAgent {
         } catch (Exception ex) {
             System.out.println(ex.toString());
             status = false;
-        } finally {
-            // 5: 상태 반환
-            return status;
         }
+        // 5: 상태 반환
+        return status;
     }  // addUser()
 
     public List<String> getUserList() {
@@ -136,9 +135,8 @@ public class UserAdminAgent {
             quit();
         } catch (Exception ex) {
             System.err.println(ex);
-        } finally {
-            return userList;
         }
+        return userList;
     }  // getUserList()
 
     private List<String> parseUserList(String message) {
@@ -195,9 +193,8 @@ public class UserAdminAgent {
             quit();
         } catch (Exception ex) {
             System.err.println(ex);
-        } finally {
-            return status;
         }
+        return status;
     }  // deleteUsers()
 
     public boolean verify(String userid) {
@@ -220,9 +217,8 @@ public class UserAdminAgent {
 
             quit();  // quit command
         } catch (IOException ex) {
-        } finally {
-            return status;
         }
+        return status;
     }
 
     private boolean connect() throws Exception {
@@ -289,8 +285,7 @@ public class UserAdminAgent {
             }
         } catch (IOException ex) {
             System.err.println("UserAdminAgent.quit() " + ex);
-        } finally {
-            return status;
         }
+        return status;
     }
 }

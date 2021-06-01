@@ -11,7 +11,7 @@
 <%-- @taglib  prefix="c" uri="http://java.sun.com/jsp/jstl/core" --%>
 
 
-<html>
+<html lang="en">
     <head>
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -33,9 +33,9 @@
                   action="WriteMail.do?menu=<%= CommandType.SEND_MAIL_COMMAND%>" >
                 <table>
                     <tr>
-                        <td> 수신 </td>
-                        <td> <input type="text" name="to" size="80"
-                                    value=<%=request.getParameter("recv") == null ? "" : request.getParameter("recv")%>>  </td>
+                        <th scope="col"> 수신 </th>
+                        <th scope="col"> <input type="text" name="to" size="80"
+                                    value=<%=request.getParameter("recv") == null ? "" : request.getParameter("recv")%>>  </th>
                     </tr>
                     <tr>
                         <td>참조</td>

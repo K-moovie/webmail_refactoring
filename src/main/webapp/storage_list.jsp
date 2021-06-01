@@ -10,7 +10,7 @@
 <%@page import="java.sql.Connection"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
-<html>
+<html lang="en">
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <title>임시저장 메일 목록</title>
@@ -37,8 +37,8 @@
             <table border="1">
                 <thead>
                     <tr>
-                        <th>수신</th>
-                        <th>제목</th>
+                        <th scope="col">수신</th>
+                        <th scope="col">제목</th>
                     </tr>
                 </thead>
                 

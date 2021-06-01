@@ -15,6 +15,8 @@ import javax.servlet.http.HttpSession;
 import cse.maven_webmail.model.FormParser;
 import cse.maven_webmail.model.SmtpAgent;
 import cse.maven_webmail.model.loadDBConfig;
+import jdk.internal.jline.internal.Nullable;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
@@ -38,28 +40,30 @@ public class WriteMailHandler extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
+
         PrintWriter out = null;
+        if(out != null) {
+            try {
+                request.setCharacterEncoding("UTF-8");
+                int select = Integer.parseInt((String) request.getParameter("menu"));
 
-        try {
-            request.setCharacterEncoding("UTF-8");
-            int select = Integer.parseInt((String) request.getParameter("menu"));
+                switch (select) {
+                    case CommandType.SEND_MAIL_COMMAND: // 실제 메일 전송하기
+                        out = response.getWriter();
+                        boolean status = sendMessage(request);
+                        out.print(getMailTransportPopUp(status));
+                        break;
 
-            switch (select) {
-                case CommandType.SEND_MAIL_COMMAND: // 실제 메일 전송하기
-                    out = response.getWriter();
-                    boolean status = sendMessage(request);
-                    out.print(getMailTransportPopUp(status));
-                    break;
-
-                default:
-                    out = response.getWriter();
-                    out.println("없는 메뉴를 선택하셨습니다. 어떻게 이 곳에 들어오셨나요?");
-                    break;
+                    default:
+                        out = response.getWriter();
+                        out.println("없는 메뉴를 선택하셨습니다. 어떻게 이 곳에 들어오셨나요?");
+                        break;
+                }
+            } catch (Exception ex) {
+                out.println(ex.toString());
+            } finally {
+                out.close();
             }
-        } catch (Exception ex) {
-            out.println(ex.toString());
-        } finally {
-            out.close();
         }
     }
 
@@ -198,7 +202,11 @@ public class WriteMailHandler extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+        try {
+            processRequest(request, response);
+        } catch (Exception ex) {
+
+        }
     }
 
     /** 
@@ -211,9 +219,11 @@ public class WriteMailHandler extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+        try {
+            processRequest(request, response);
+        } catch (Exception ex) {
 
-
+        }
     }
 
     /** 

@@ -70,9 +70,8 @@ public class MessageParser {
         } catch (Exception ex) {
             System.out.println("MessageParser.parse() - Exception : " + ex);
             status = false;
-        } finally {
-            return status;
         }
+        return status;
     }
 
     private void getEnvelope(Message m) throws Exception {

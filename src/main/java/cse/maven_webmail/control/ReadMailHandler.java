@@ -103,13 +103,14 @@ public class ReadMailHandler extends HttpServlet {
             // try-with-resource 문은 fis를 명시적으로 close해 주지 않아도 됨.
             try (FileInputStream fis = new FileInputStream(f)) {
                 fis.read(b);
-            };
+                sos = response.getOutputStream();
+                sos.write(b);
+                sos.flush();
+                sos.close();
+            }
 
             // 다운로드
-            sos = response.getOutputStream();
-            sos.write(b);
-            sos.flush();
-            sos.close();
+
         } catch (Exception ex) {
             System.out.println("====== DOWNLOAD exception : " + ex);
         }
@@ -139,7 +140,11 @@ public class ReadMailHandler extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+        try {
+            processRequest(request, response);
+        } catch (Exception ex) {
+
+        }
     }
 
     /** 
@@ -152,7 +157,11 @@ public class ReadMailHandler extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+        try {
+            processRequest(request, response);
+        } catch (Exception ex) {
+
+        }
     }
 
     /** 
